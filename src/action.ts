@@ -5,11 +5,6 @@ import { Hyperfine } from '.';
 import * as SimpleGit from 'simple-git/promise';
 import * as core from '@actions/core';
 
-const BenchmarkConfig = process.env['BENCHMARK_CONFIG'] || '.hyperfine.js';
-const BenchmarkFile = process.env['BENCHMARK_OUTPUT'] || 'benchmarks.json';
-const Count = parseInt(process.env['COUNT'] || '100', 10);
-const CommitMessage = process.env['GIT_COMMIT_MESSAGE'] || 'Benchmarks update';
-
 /** Typings for .hyperfine.js */
 export type HyperfineConfigFile = HyperfineConfig[];
 export interface HyperfineConfig {
@@ -54,21 +49,26 @@ function isHyperfineConfig(obj: Record<string, any>): obj is HyperfineConfig[] {
 /**
  * Load the existing benchmarks from the benchmark file
  */
-async function getExistingBenchmarks(): Promise<HyperfineResult[]> {
-    const isExistingBenchmarks = await fileExists(BenchmarkFile);
+async function getExistingBenchmarks(benchmarkFile: string): Promise<HyperfineResult[]> {
+    const isExistingBenchmarks = await fileExists(benchmarkFile);
     if (!isExistingBenchmarks) {
         return [];
     }
 
-    const data = await fs.readFile(BenchmarkFile);
+    const data = await fs.readFile(benchmarkFile);
     const res = JSON.parse(data.toString());
     if (!Array.isArray(res)) {
-        throw new Error(`Corrupted benchmark file, ${BenchmarkFile} is not a JSON array`);
+        throw new Error(`Corrupted benchmark file, ${benchmarkFile} is not a JSON array`);
     }
     return res as HyperfineResult[];
 }
 
 async function main() {
+    const BenchmarkConfig = core.getInput('benchmark_config');
+    const BenchmarkFile = core.getInput('benchmark_output');
+    const Count = parseInt(core.getInput('count'), 10);
+    const CommitMessage = core.getInput('commit_message');
+
     const isConfigFound = await fileExists(BenchmarkConfig);
     if (!isConfigFound) {
         throw new Error(`Config file: ${BenchmarkConfig} not found`);
@@ -102,7 +102,7 @@ async function main() {
         });
     }
 
-    const existing = await getExistingBenchmarks();
+    const existing = await getExistingBenchmarks(BenchmarkFile);
     existing.unshift(benchmark);
     // Trim the results
     while (Count > 0 && existing.length > Count) {
