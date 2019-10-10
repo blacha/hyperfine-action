@@ -75,7 +75,7 @@ async function main() {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const config = require(path.join(__dirname, '..', BenchmarkConfig));
+    const config = require('./' + BenchmarkConfig);
     if (!isHyperfineConfig(config)) {
         throw new Error(`Config file: ${BenchmarkConfig} is not a JSON array`);
     }
