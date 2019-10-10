@@ -1,10 +1,18 @@
-name: 'hyperfine-action'
+name: hyperfine benchmarking
 description: 'Runs hyperfine benchmarking across provided input files'
-author: 'Blayne Chard'
+author: 'Blayne Chard <blayne@chard.com>'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  BENCHMARK_CONFIG:
+    description: Benchmark file
+    default: '.hyperfine.js'
+  BENCHMARK_OUTPUT:
+    description: Benchmark file
+    default: 'benchmarks.json'
+  COUNT:
+    description: Number of past runs to keep (`0` keeps everything)
+    default: 100
+  GIT_COMMIT_MESSAGE:
+    description: the commit message for the benchmark update
 runs:
   using: 'node12'
   main: 'build/action.js'

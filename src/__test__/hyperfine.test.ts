@@ -7,7 +7,7 @@ o.spec('Hyperfine', () => {
     o('Should get metrics', async () => {
         const sleepTime = 0.1;
         o.timeout(10000);
-        const metrics = await Hyperfine.run(['sleep', `${sleepTime}`]);
+        const metrics = await Hyperfine.run(`sleep ${sleepTime}`);
 
         o(metrics.command).equals(`sleep ${sleepTime}`);
         o(Math.abs(metrics.mean - sleepTime) < VARIANCE).equals(true);

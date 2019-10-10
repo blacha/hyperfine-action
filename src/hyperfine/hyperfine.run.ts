@@ -2,17 +2,10 @@ import { exec, ChildProcess } from 'child_process';
 import { promises as fs } from 'fs';
 import { HyperFineResult, HyperFineJsonOutput } from './hyperfine.output';
 import { randomBytes } from 'crypto';
+import { fileExists } from '../file';
 
 export const HyperFineCommand = './static/hyperfine'; // tmp.tmpNameSync();
 
-export async function hasHyperfine() {
-    try {
-        await fs.stat(HyperFineCommand);
-        return true;
-    } catch (e) {
-        return false;
-    }
-}
 
 async function waitForChildProcess(child: ChildProcess): Promise<string> {
     const output: string[] = [];
@@ -32,14 +25,14 @@ async function waitForChildProcess(child: ChildProcess): Promise<string> {
     });
 }
 
-export async function runHyperfine(cmd: string[]): Promise<HyperFineResult> {
-    let isHyperfineInstalled = await hasHyperfine();
+export async function runHyperfine(cmd: string): Promise<HyperFineResult> {
+    let isHyperfineInstalled = await fileExists(HyperFineCommand);
     if (!isHyperfineInstalled) {
         throw new Error('Failed to open hyperfine @ ' + HyperFineCommand);
     }
 
     const outputJsonFile = '/tmp/' + randomBytes(10).toString('hex') + '.json';
-    const hyperfineExecute = [HyperFineCommand, `--export-json ${outputJsonFile}`, `'${cmd.join(' ')}'`];
+    const hyperfineExecute = [HyperFineCommand, `--export-json ${outputJsonFile}`, `'${cmd}'`]; // TODO escape \'
 
     const output = exec(hyperfineExecute.join(' '));
     const buffer = await waitForChildProcess(output);
