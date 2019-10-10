@@ -16,4 +16,4 @@ inputs:
     default: 'Update benchmarks'
 runs:
   using: 'node12'
-  main: 'build/action.js'
+  main: 'dist/index.js'
