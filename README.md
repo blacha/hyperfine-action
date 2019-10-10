@@ -6,6 +6,8 @@
 Runs [Hyperfine](https://github.com/sharkdp/hyperfine) as a github action
 
 
+Inspired by the [Denoland](https://github.com/denoland/deno) benchmark [suite](https://deno.land/benchmarks.html)
+
 # Usage
 
 Create a `.hyperfine.js`
@@ -47,3 +49,5 @@ Example Repo [Actions](https://github.com/blacha/hyperfine-action-test/actions)
 
 ## Future
 In the future the `benchmarks.json` could be parsed and pushed to github pages to create a dynamic benchmark generation
+
+
