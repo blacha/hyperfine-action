@@ -1,0 +1,10 @@
+name: 'hyperfine-action'
+description: 'Runs hyperfine benchmarking across provided input files'
+author: 'Blayne Chard'
+inputs:
+  myInput:              # change this
+    description: 'input description here'
+    default: 'default value if applicable'
+runs:
+  using: 'node12'
+  main: 'build/action.js'
