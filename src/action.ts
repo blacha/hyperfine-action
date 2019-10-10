@@ -1,19 +1,20 @@
-import { promises as fs } from 'fs'
+import { promises as fs } from 'fs';
 import { fileExists } from './file';
 import * as path from 'path';
 import { Hyperfine } from '.';
 import * as SimpleGit from 'simple-git/promise';
+import * as core from '@actions/core';
 
-const BenchmarkConfig = process.env['BENCHMARK_CONFIG'] || '.hyperfine.js'
-const BenchmarkFile = process.env['BENCHMARK_OUTPUT'] || 'benchmarks.json'
+const BenchmarkConfig = process.env['BENCHMARK_CONFIG'] || '.hyperfine.js';
+const BenchmarkFile = process.env['BENCHMARK_OUTPUT'] || 'benchmarks.json';
 const Count = parseInt(process.env['COUNT'] || '100', 10);
-const CommitMessage = process.env['GIT_COMMIT_MESSAGE'] || 'Benchmarks update'
+const CommitMessage = process.env['GIT_COMMIT_MESSAGE'] || 'Benchmarks update';
 
 /** Typings for .hyperfine.js */
 export type HyperfineConfigFile = HyperfineConfig[];
 export interface HyperfineConfig {
     name: string;
-    command: string
+    command: string;
 }
 
 export interface HyperfineResultSuite {
@@ -40,10 +41,10 @@ export interface HyperfineResult {
     createdAt: string;
 
     /** List of benchmark results */
-    results: HyperfineResultSuite[]
+    results: HyperfineResultSuite[];
 }
 
-function isHyperfineConfig(obj: Object): obj is HyperfineConfig[] {
+function isHyperfineConfig(obj: Record<string, any>): obj is HyperfineConfig[] {
     if (!Array.isArray(obj)) {
         return false;
     }
@@ -62,7 +63,7 @@ async function getExistingBenchmarks(): Promise<HyperfineResult[]> {
     const data = await fs.readFile(BenchmarkFile);
     const res = JSON.parse(data.toString());
     if (!Array.isArray(res)) {
-        throw new Error(`Corrupted benchmark file, ${BenchmarkFile} is not a JSON array`)
+        throw new Error(`Corrupted benchmark file, ${BenchmarkFile} is not a JSON array`);
     }
     return res as HyperfineResult[];
 }
@@ -73,6 +74,7 @@ async function main() {
         throw new Error(`Config file: ${BenchmarkConfig} not found`);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const config = require(path.join(__dirname, '..', BenchmarkConfig));
     if (!isHyperfineConfig(config)) {
         throw new Error(`Config file: ${BenchmarkConfig} is not a JSON array`);
@@ -80,15 +82,15 @@ async function main() {
 
     const git = SimpleGit();
 
-    const commitHash = await git.revparse(['HEAD'])
+    const commitHash = await git.revparse(['HEAD']);
     const benchmark: HyperfineResult = {
         hash: commitHash,
         createdAt: new Date().toISOString(),
-        results: []
+        results: [],
     };
 
     for (const suite of config) {
-        console.log('Starting benchmark', suite.name)
+        console.log('Starting benchmark', suite.name);
         const res = await Hyperfine.run(suite.command);
         const count = res.times.length;
         delete res.times;
@@ -96,7 +98,7 @@ async function main() {
             name: suite.name,
             command: suite.command,
             count,
-            ...res
+            ...res,
         });
     }
 
@@ -110,5 +112,4 @@ async function main() {
     await fs.writeFile(BenchmarkFile, JSON.stringify(existing, null, 2));
 }
 
-
-main();
+main().catch((e: Error) => core.setFailed(e.message));

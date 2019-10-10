@@ -6,7 +6,6 @@ import { fileExists } from '../file';
 
 export const HyperFineCommand = './static/hyperfine'; // tmp.tmpNameSync();
 
-
 async function waitForChildProcess(child: ChildProcess): Promise<string> {
     const output: string[] = [];
     if (child.stdout == null) {
