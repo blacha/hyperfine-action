@@ -69,15 +69,22 @@ async function main() {
     const Count = parseInt(core.getInput('count'), 10);
     const CommitMessage = core.getInput('commit_message');
 
-    const isConfigFound = await fileExists(BenchmarkConfig);
+    const workspace = process.env.GITHUB_WORKSPACE;
+    if (workspace == null) {
+        throw new Error(`Failed to read workspace "$GITHUB_WORKSPACE"`);
+    }
+
+    const configPath = path.join(workspace, BenchmarkConfig);
+
+    const isConfigFound = await fileExists(configPath);
     if (!isConfigFound) {
-        throw new Error(`Config file: ${BenchmarkConfig} not found`);
+        throw new Error(`Config file: ${configPath} not found`);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const config = require('./' + BenchmarkConfig);
+    const config = require(configPath);
     if (!isHyperfineConfig(config)) {
-        throw new Error(`Config file: ${BenchmarkConfig} is not a JSON array`);
+        throw new Error(`Config file: ${configPath} is not a JSON array`);
     }
 
     const git = SimpleGit();
