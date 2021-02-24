@@ -6,7 +6,7 @@
 Runs [Hyperfine](https://github.com/sharkdp/hyperfine) as a github action
 
 
-Inspired by the [Denoland](https://github.com/denoland/deno) benchmark [suite](https://deno.land/benchmarks.html)
+Inspired by the [Denoland](https://github.com/denoland/deno) benchmark [suite](https://deno.land/benchmarks)
 
 # Usage
 
