@@ -3,7 +3,11 @@
 [![Build Status](https://github.com/blacha/cogeotiff/workflows/Main/badge.svg)](https://github.com/blacha/cogeotiff/actions)
 
 
-Runs [Hyperfine](https://github.com/sharkdp/hyperfine) as a github action
+Runs [Hyperfine](https://github.com/sharkdp/hyperfine) as a github action and stores the result as a Github page.
+
+Example Repo [Actions](https://github.com/blacha/hyperfine-action-test/actions)
+
+Example output [Benchmarks](https://blacha.github.io/hyperfine-action-test/benchmarks.html)
 
 
 Inspired by the [Denoland](https://github.com/denoland/deno) benchmark [suite](https://deno.land/benchmarks)
@@ -40,11 +44,23 @@ Benchmark #1: node index.js
   Range (min … max):    5.035 s …  5.043 s    10 runs
 ```
 
+## Configuration
 
-Example Repo [Actions](https://github.com/blacha/hyperfine-action-test/actions)
-
-
-## Future
-In the future the `benchmarks.json` could be parsed and pushed to github pages to create a dynamic benchmark generation
-
-
+```yaml
+- uses blacha/hyperfine-action@v1
+  with:
+    # Configuration file to use
+    benchmark-config: '.hyperfine.json'
+    # Number of benchmarks to keep
+    count: 100
+    # Branch to use for benchmarks output/benchmark.json
+    benchmark-branch: 'gh-pages'
+    # Where to store the output of the benchmarks
+    benchmark-output: 'benchmarks.json'
+    # benchmark html file to view the benchmarks
+    benchmark-html: 'benchmarks.html'
+    # Branch to use as the main or master for comparision
+    master-branch: 'master'
+    # configuration token
+    github-token: ${{ github.token }}
+```
