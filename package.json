@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "@actions/core": "^1.1.3",
-    "simple-git": "^1.126.0",
     "source-map-support": "^0.5.12"
   }
 }

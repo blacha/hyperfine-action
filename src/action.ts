@@ -1,7 +1,7 @@
 import * as core from '@actions/core';
+import { execFileSync } from 'child_process';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import SimpleGit from 'simple-git/promise';
 import { Hyperfine } from '.';
 import { fileExists } from './file';
 
@@ -64,8 +64,8 @@ async function getExistingBenchmarks(benchmarkFile: string): Promise<HyperfineRe
 }
 
 async function main(): Promise<void> {
-  const BenchmarkConfig = core.getInput('benchmark_config');
-  const BenchmarkFile = core.getInput('benchmark_output');
+  const BenchmarkConfig = core.getInput('benchmark-config');
+  const BenchmarkFile = core.getInput('benchmark-output');
   const Count = parseInt(core.getInput('count'), 10);
   // const CommitMessage = core.getInput('commit_message');
 
@@ -81,15 +81,12 @@ async function main(): Promise<void> {
     throw new Error(`Config file: ${configPath} not found`);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  const config = require(configPath);
+  const config = JSON.parse((await fs.readFile(configPath)).toString());
   if (!isHyperfineConfig(config)) {
     throw new Error(`Config file: ${configPath} is not a JSON array`);
   }
 
-  const git = SimpleGit();
-
-  const commitHash = await git.revparse(['HEAD']);
+  const commitHash = execFileSync('git', ['rev-parse', 'HEAD']).toString().trim();
   const benchmark: HyperfineResult = {
     hash: commitHash,
     createdAt: new Date().toISOString(),
@@ -111,9 +108,7 @@ async function main(): Promise<void> {
   const existing = await getExistingBenchmarks(BenchmarkFile);
   existing.unshift(benchmark);
   // Trim the results
-  while (Count > 0 && existing.length > Count) {
-    existing.pop();
-  }
+  while (Count > 0 && existing.length > Count) existing.pop();
 
   await fs.writeFile(BenchmarkFile, JSON.stringify(existing, null, 2));
 }

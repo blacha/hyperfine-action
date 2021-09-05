@@ -2,16 +2,16 @@ name: hyperfine benchmarking
 description: 'Runs hyperfine benchmarking across provided input files'
 author: 'Blayne Chard <blayne@chard.com>'
 inputs:
-  benchmark_config:
+  benchmark-config:
     description: Benchmark file
     default: '.hyperfine.js'
-  benchmark_output:
+  benchmark-output:
     description: Benchmark file
     default: 'benchmarks.json'
   count:
     description: Number of past runs to keep (`0` keeps everything)
     default: 100
-  commit_message:
+  commit-message:
     description: the commit message for the benchmark update
     default: 'Update benchmarks'
 runs:
