@@ -351,10 +351,10 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       command_1.issueCommand("notice", utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
     }
     exports.notice = notice;
-    function info2(message) {
+    function info(message) {
       process.stdout.write(message + os.EOL);
     }
-    exports.info = info2;
+    exports.info = info;
     function startGroup(name) {
       command_1.issue("group", name);
     }
@@ -918,12 +918,12 @@ var require_http_client = __commonJS({
           throw new Error("Client has already been disposed.");
         }
         let parsedUrl = new URL(requestUrl);
-        let info2 = this._prepareRequest(verb, parsedUrl, headers);
+        let info = this._prepareRequest(verb, parsedUrl, headers);
         let maxTries = this._allowRetries && RetryableHttpVerbs.indexOf(verb) != -1 ? this._maxRetries + 1 : 1;
         let numTries = 0;
         let response;
         while (numTries < maxTries) {
-          response = await this.requestRaw(info2, data);
+          response = await this.requestRaw(info, data);
           if (response && response.message && response.message.statusCode === HttpCodes.Unauthorized) {
             let authenticationHandler;
             for (let i = 0; i < this.handlers.length; i++) {
@@ -933,7 +933,7 @@ var require_http_client = __commonJS({
               }
             }
             if (authenticationHandler) {
-              return authenticationHandler.handleAuthentication(this, info2, data);
+              return authenticationHandler.handleAuthentication(this, info, data);
             } else {
               return response;
             }
@@ -956,8 +956,8 @@ var require_http_client = __commonJS({
                 }
               }
             }
-            info2 = this._prepareRequest(verb, parsedRedirectUrl, headers);
-            response = await this.requestRaw(info2, data);
+            info = this._prepareRequest(verb, parsedRedirectUrl, headers);
+            response = await this.requestRaw(info, data);
             redirectsRemaining--;
           }
           if (HttpResponseRetryCodes.indexOf(response.message.statusCode) == -1) {
@@ -977,7 +977,7 @@ var require_http_client = __commonJS({
         }
         this._disposed = true;
       }
-      requestRaw(info2, data) {
+      requestRaw(info, data) {
         return new Promise((resolve, reject) => {
           let callbackForResult = function(err, res) {
             if (err) {
@@ -985,13 +985,13 @@ var require_http_client = __commonJS({
             }
             resolve(res);
           };
-          this.requestRawWithCallback(info2, data, callbackForResult);
+          this.requestRawWithCallback(info, data, callbackForResult);
         });
       }
-      requestRawWithCallback(info2, data, onResult) {
+      requestRawWithCallback(info, data, onResult) {
         let socket;
         if (typeof data === "string") {
-          info2.options.headers["Content-Length"] = Buffer.byteLength(data, "utf8");
+          info.options.headers["Content-Length"] = Buffer.byteLength(data, "utf8");
         }
         let callbackCalled = false;
         let handleResult = (err, res) => {
@@ -1000,7 +1000,7 @@ var require_http_client = __commonJS({
             onResult(err, res);
           }
         };
-        let req = info2.httpModule.request(info2.options, (msg) => {
+        let req = info.httpModule.request(info.options, (msg) => {
           let res = new HttpClientResponse(msg);
           handleResult(null, res);
         });
@@ -1011,7 +1011,7 @@ var require_http_client = __commonJS({
           if (socket) {
             socket.end();
           }
-          handleResult(new Error("Request timeout: " + info2.options.path), null);
+          handleResult(new Error("Request timeout: " + info.options.path), null);
         });
         req.on("error", function(err) {
           handleResult(err, null);
@@ -1033,27 +1033,27 @@ var require_http_client = __commonJS({
         return this._getAgent(parsedUrl);
       }
       _prepareRequest(method, requestUrl, headers) {
-        const info2 = {};
-        info2.parsedUrl = requestUrl;
-        const usingSsl = info2.parsedUrl.protocol === "https:";
-        info2.httpModule = usingSsl ? https : http;
+        const info = {};
+        info.parsedUrl = requestUrl;
+        const usingSsl = info.parsedUrl.protocol === "https:";
+        info.httpModule = usingSsl ? https : http;
         const defaultPort = usingSsl ? 443 : 80;
-        info2.options = {};
-        info2.options.host = info2.parsedUrl.hostname;
-        info2.options.port = info2.parsedUrl.port ? parseInt(info2.parsedUrl.port) : defaultPort;
-        info2.options.path = (info2.parsedUrl.pathname || "") + (info2.parsedUrl.search || "");
-        info2.options.method = method;
-        info2.options.headers = this._mergeHeaders(headers);
+        info.options = {};
+        info.options.host = info.parsedUrl.hostname;
+        info.options.port = info.parsedUrl.port ? parseInt(info.parsedUrl.port) : defaultPort;
+        info.options.path = (info.parsedUrl.pathname || "") + (info.parsedUrl.search || "");
+        info.options.method = method;
+        info.options.headers = this._mergeHeaders(headers);
         if (this.userAgent != null) {
-          info2.options.headers["user-agent"] = this.userAgent;
+          info.options.headers["user-agent"] = this.userAgent;
         }
-        info2.options.agent = this._getAgent(info2.parsedUrl);
+        info.options.agent = this._getAgent(info.parsedUrl);
         if (this.handlers) {
           this.handlers.forEach((handler) => {
-            handler.prepareRequest(info2.options);
+            handler.prepareRequest(info.options);
           });
         }
-        return info2;
+        return info;
       }
       _mergeHeaders(headers) {
         const lowercaseKeys = (obj) => Object.keys(obj).reduce((c, k) => (c[k.toLowerCase()] = obj[k], c), {});
@@ -4929,32 +4929,48 @@ var Hyperfine = {
 
 // src/benchmark.template.ts
 var BenchmarkHtml = `<html>
+
 <head>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@toast-ui/chart@4.3.6/dist/toastui-chart.css"
     integrity="sha256-Tjub96L9YQYpbzxXJJcQto8bJjzmGy5SPH6kn5SVe+Q=" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/@toast-ui/chart@4.3.6/dist/toastui-chart.min.js"
     integrity="sha256-ZtanUf/tmM9btpMqLSoXOA2ITHM2bR6JNA1jpNwbquA=" crossorigin="anonymous"><\/script>
+  <style>
+    body {
+      width: 800px;
+      margin: auto;
+      padding: 16px
+    }
+  </style>
   <script>
     document.addEventListener('DOMContentLoaded', async () => {
-      const res = await fetch('./benchmarks.json').then(c => c.json());
-
       let lastEvent = null;
 
       const categories = [];
       const series = [];
 
-      for (const d of res.reverse()) {
-        if (lastEvent == null || d.createdAt > lastEvent.date) lastEvent = d;
-        categories.push(d.createdAt.slice(0, 10) + ' - ' + d.hash.slice(0, 8));
-        for (const r of d.results) {
-          let s = series.find(f => f.name == r.name)
-          if (s == null) {
-            s = { name: r.name, data: [] }
-            series.push(s)
-          };
-          s.data.push(r.mean)
-        }
 
+      const res = await fetch('./benchmarks.json').then(c => c.json());
+      const benchmarks = res.reverse();
+
+      const allSeries = new Set();
+      for (const bench of benchmarks) {
+        categories.push(bench.createdAt.slice(0, 10) + ' - ' + bench.hash.slice(0, 8));
+
+        for (const r of bench.results) allSeries.add(r.name);
+      }
+
+
+      for (const name of allSeries) {
+        const ser = { name, data: [] };
+        series.push(ser)
+        for (const bench of benchmarks) {
+          if (lastEvent == null || bench.createdAt > lastEvent.date) lastEvent = bench;
+          const result = bench.results.find(f => f.name === name);
+
+          if (result == null) ser.data.push(undefined)
+          else ser.data.push(result.mean)
+        }
       }
 
       const options = {
@@ -5081,8 +5097,7 @@ async function main() {
     });
   }
   const masterBranch = core2.getInput("master-branch");
-  const isMasterBranch = masterBranch === github2.context.ref;
-  core2.info(`Check branch : ${masterBranch} vs ${github2.context.ref}, isMaster: ${isMasterBranch}`);
+  const isMasterBranch = `refs/heads/${masterBranch}` === github2.context.ref;
   const benchmarkBranch = core2.getInput("benchmark-branch");
   core2.debug("Checkout benchmark branch: " + benchmarkBranch);
   git.init();
