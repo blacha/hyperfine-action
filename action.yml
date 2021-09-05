@@ -8,6 +8,9 @@ inputs:
   benchmark-output:
     description: Benchmark file
     default: 'benchmarks.json'
+  benchmark-html:
+    description: Benchmark file
+    default: 'benchmarks.html'
   count:
     description: Number of past runs to keep (`0` keeps everything)
     default: 100

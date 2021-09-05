@@ -1,5 +1,4 @@
-<html>
-
+export const BenchmarkHtml = `<html>
 <head>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@toast-ui/chart@4.3.6/dist/toastui-chart.css"
     integrity="sha256-Tjub96L9YQYpbzxXJJcQto8bJjzmGy5SPH6kn5SVe+Q=" crossorigin="anonymous">
@@ -45,4 +44,4 @@
   <div id="benchmarks"></div>
 </body>
 
-</html>
+</html>`;
