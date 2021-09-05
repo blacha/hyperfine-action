@@ -100,8 +100,7 @@ async function main(): Promise<void> {
     });
   }
   const masterBranch = core.getInput('master-branch');
-  const isMasterBranch = masterBranch === github.context.ref;
-  core.info(`Check branch : ${masterBranch} vs ${github.context.ref}, isMaster: ${isMasterBranch}`);
+  const isMasterBranch = `refs/heads/${masterBranch}` === github.context.ref;
 
   const benchmarkBranch = core.getInput('benchmark-branch');
 
