@@ -1,8 +1,9 @@
+import 'source-map-support/register';
 import o from 'ospec';
 import { Hyperfine } from '../index';
 
 o.spec('Hyperfine', () => {
-  const VARIANCE = 0.01;
+  const VARIANCE = 0.05;
 
   o('Should get metrics', async () => {
     const sleepTime = 0.05;
