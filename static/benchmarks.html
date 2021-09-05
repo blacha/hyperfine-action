@@ -14,7 +14,7 @@
       const categories = [];
       const series = [];
 
-      for (const d of res) {
+      for (const d of res.reverse()) {
         if (lastEvent == null || d.createdAt > lastEvent.date) lastEvent = d;
         categories.push(d.createdAt.slice(0, 10) + ' - ' + d.hash.slice(0, 8));
         for (const r of d.results) {
