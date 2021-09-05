@@ -10,12 +10,12 @@ Inspired by the [Denoland](https://github.com/denoland/deno) benchmark [suite](h
 
 # Usage
 
-Create a `.hyperfine.js`
+Create a `.hyperfine.json`
 
-```javascript
-module.exports = [
-  { name: 'Sleep 100ms', command: 'sleep 0.1' }, 
-  { name: 'Test index', command: 'node index.js'}
+```json
+[
+  { "name": "sleep", "command": "sleep 0.1" },
+  { "name": "node", "command": "node -e 'console.log()'" }
 ]
 ```
 
