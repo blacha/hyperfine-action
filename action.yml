@@ -4,7 +4,7 @@ author: 'Blayne Chard <blayne@chard.com>'
 inputs:
   benchmark-config:
     description: Benchmark file
-    default: '.hyperfine.js'
+    default: '.hyperfine.json'
   benchmark-output:
     description: Benchmark file
     default: 'benchmarks.json'
@@ -14,6 +14,16 @@ inputs:
   commit-message:
     description: the commit message for the benchmark update
     default: 'Update benchmarks'
+  benchmark-branch:
+    description: 'Branch to use for benchmarks'
+    required: false
+    default: 'gh-pages'
+  github-token:
+    description: Token to use to add comments to pull requests
+    default: ${{ github.token }}
+  publish:
+    description: Should theses benchmarks be published
+    default: false
 runs:
   using: 'node12'
   main: 'dist/action.js'
