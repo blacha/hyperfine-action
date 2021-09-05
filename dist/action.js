@@ -305,7 +305,7 @@ var require_core = __commonJS({
       return inputs;
     }
     exports.getMultilineInput = getMultilineInput;
-    function getBooleanInput2(name, options) {
+    function getBooleanInput(name, options) {
       const trueValue = ["true", "True", "TRUE"];
       const falseValue = ["false", "False", "FALSE"];
       const val = getInput2(name, options);
@@ -316,7 +316,7 @@ var require_core = __commonJS({
       throw new TypeError(`Input does not meet YAML 1.2 "Core Schema" specification: ${name}
 Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
     }
-    exports.getBooleanInput = getBooleanInput2;
+    exports.getBooleanInput = getBooleanInput;
     function setOutput(name, value) {
       process.stdout.write(os.EOL);
       command_1.issueCommand("set-output", { name }, value);
@@ -351,10 +351,10 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       command_1.issueCommand("notice", utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
     }
     exports.notice = notice;
-    function info(message) {
+    function info2(message) {
       process.stdout.write(message + os.EOL);
     }
-    exports.info = info;
+    exports.info = info2;
     function startGroup(name) {
       command_1.issue("group", name);
     }
@@ -918,12 +918,12 @@ var require_http_client = __commonJS({
           throw new Error("Client has already been disposed.");
         }
         let parsedUrl = new URL(requestUrl);
-        let info = this._prepareRequest(verb, parsedUrl, headers);
+        let info2 = this._prepareRequest(verb, parsedUrl, headers);
         let maxTries = this._allowRetries && RetryableHttpVerbs.indexOf(verb) != -1 ? this._maxRetries + 1 : 1;
         let numTries = 0;
         let response;
         while (numTries < maxTries) {
-          response = await this.requestRaw(info, data);
+          response = await this.requestRaw(info2, data);
           if (response && response.message && response.message.statusCode === HttpCodes.Unauthorized) {
             let authenticationHandler;
             for (let i = 0; i < this.handlers.length; i++) {
@@ -933,7 +933,7 @@ var require_http_client = __commonJS({
               }
             }
             if (authenticationHandler) {
-              return authenticationHandler.handleAuthentication(this, info, data);
+              return authenticationHandler.handleAuthentication(this, info2, data);
             } else {
               return response;
             }
@@ -956,8 +956,8 @@ var require_http_client = __commonJS({
                 }
               }
             }
-            info = this._prepareRequest(verb, parsedRedirectUrl, headers);
-            response = await this.requestRaw(info, data);
+            info2 = this._prepareRequest(verb, parsedRedirectUrl, headers);
+            response = await this.requestRaw(info2, data);
             redirectsRemaining--;
           }
           if (HttpResponseRetryCodes.indexOf(response.message.statusCode) == -1) {
@@ -977,7 +977,7 @@ var require_http_client = __commonJS({
         }
         this._disposed = true;
       }
-      requestRaw(info, data) {
+      requestRaw(info2, data) {
         return new Promise((resolve, reject) => {
           let callbackForResult = function(err, res) {
             if (err) {
@@ -985,13 +985,13 @@ var require_http_client = __commonJS({
             }
             resolve(res);
           };
-          this.requestRawWithCallback(info, data, callbackForResult);
+          this.requestRawWithCallback(info2, data, callbackForResult);
         });
       }
-      requestRawWithCallback(info, data, onResult) {
+      requestRawWithCallback(info2, data, onResult) {
         let socket;
         if (typeof data === "string") {
-          info.options.headers["Content-Length"] = Buffer.byteLength(data, "utf8");
+          info2.options.headers["Content-Length"] = Buffer.byteLength(data, "utf8");
         }
         let callbackCalled = false;
         let handleResult = (err, res) => {
@@ -1000,7 +1000,7 @@ var require_http_client = __commonJS({
             onResult(err, res);
           }
         };
-        let req = info.httpModule.request(info.options, (msg) => {
+        let req = info2.httpModule.request(info2.options, (msg) => {
           let res = new HttpClientResponse(msg);
           handleResult(null, res);
         });
@@ -1011,7 +1011,7 @@ var require_http_client = __commonJS({
           if (socket) {
             socket.end();
           }
-          handleResult(new Error("Request timeout: " + info.options.path), null);
+          handleResult(new Error("Request timeout: " + info2.options.path), null);
         });
         req.on("error", function(err) {
           handleResult(err, null);
@@ -1033,27 +1033,27 @@ var require_http_client = __commonJS({
         return this._getAgent(parsedUrl);
       }
       _prepareRequest(method, requestUrl, headers) {
-        const info = {};
-        info.parsedUrl = requestUrl;
-        const usingSsl = info.parsedUrl.protocol === "https:";
-        info.httpModule = usingSsl ? https : http;
+        const info2 = {};
+        info2.parsedUrl = requestUrl;
+        const usingSsl = info2.parsedUrl.protocol === "https:";
+        info2.httpModule = usingSsl ? https : http;
         const defaultPort = usingSsl ? 443 : 80;
-        info.options = {};
-        info.options.host = info.parsedUrl.hostname;
-        info.options.port = info.parsedUrl.port ? parseInt(info.parsedUrl.port) : defaultPort;
-        info.options.path = (info.parsedUrl.pathname || "") + (info.parsedUrl.search || "");
-        info.options.method = method;
-        info.options.headers = this._mergeHeaders(headers);
+        info2.options = {};
+        info2.options.host = info2.parsedUrl.hostname;
+        info2.options.port = info2.parsedUrl.port ? parseInt(info2.parsedUrl.port) : defaultPort;
+        info2.options.path = (info2.parsedUrl.pathname || "") + (info2.parsedUrl.search || "");
+        info2.options.method = method;
+        info2.options.headers = this._mergeHeaders(headers);
         if (this.userAgent != null) {
-          info.options.headers["user-agent"] = this.userAgent;
+          info2.options.headers["user-agent"] = this.userAgent;
         }
-        info.options.agent = this._getAgent(info.parsedUrl);
+        info2.options.agent = this._getAgent(info2.parsedUrl);
         if (this.handlers) {
           this.handlers.forEach((handler) => {
-            handler.prepareRequest(info.options);
+            handler.prepareRequest(info2.options);
           });
         }
-        return info;
+        return info2;
       }
       _mergeHeaders(headers) {
         const lowercaseKeys = (obj) => Object.keys(obj).reduce((c, k) => (c[k.toLowerCase()] = obj[k], c), {});
@@ -1550,8 +1550,8 @@ var require_dist_node2 = __commonJS({
     function isKeyOperator(operator) {
       return operator === ";" || operator === "&" || operator === "?";
     }
-    function getValues(context2, operator, key, modifier) {
-      var value = context2[key], result = [];
+    function getValues(context3, operator, key, modifier) {
+      var value = context3[key], result = [];
       if (isDefined(value) && value !== "") {
         if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
           value = value.toString();
@@ -1611,7 +1611,7 @@ var require_dist_node2 = __commonJS({
         expand: expand.bind(null, template)
       };
     }
-    function expand(template, context2) {
+    function expand(template, context3) {
       var operators = ["+", "#", ".", "/", ";", "?", "&"];
       return template.replace(/\{([^\{\}]+)\}|([^\{\}]+)/g, function(_, expression, literal) {
         if (expression) {
@@ -1623,7 +1623,7 @@ var require_dist_node2 = __commonJS({
           }
           expression.split(/,/g).forEach(function(variable) {
             var tmp = /([^:\*]*)(?::(\d+)|(\*))?/.exec(variable);
-            values.push(getValues(context2, operator, tmp[1], tmp[2] || tmp[3]));
+            values.push(getValues(context3, operator, tmp[1], tmp[2] || tmp[3]));
           });
           if (operator && operator !== "+") {
             var separator = ",";
@@ -4855,6 +4855,7 @@ var require_github = __commonJS({
 // src/action.ts
 __markAsModule(exports);
 var core2 = __toModule(require_core());
+var github2 = __toModule(require_github());
 var import_fs3 = __toModule(require("fs"));
 var path2 = __toModule(require("path"));
 
@@ -4925,6 +4926,55 @@ async function runHyperfine(cmd) {
 var Hyperfine = {
   run: runHyperfine
 };
+
+// src/benchmark.template.ts
+var BenchmarkHtml = `<html>
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@toast-ui/chart@4.3.6/dist/toastui-chart.css"
+    integrity="sha256-Tjub96L9YQYpbzxXJJcQto8bJjzmGy5SPH6kn5SVe+Q=" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/@toast-ui/chart@4.3.6/dist/toastui-chart.min.js"
+    integrity="sha256-ZtanUf/tmM9btpMqLSoXOA2ITHM2bR6JNA1jpNwbquA=" crossorigin="anonymous"><\/script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const res = await fetch('./benchmarks.json').then(c => c.json());
+
+      let lastEvent = null;
+
+      const categories = [];
+      const series = [];
+
+      for (const d of res.reverse()) {
+        if (lastEvent == null || d.createdAt > lastEvent.date) lastEvent = d;
+        categories.push(d.createdAt.slice(0, 10) + ' - ' + d.hash.slice(0, 8));
+        for (const r of d.results) {
+          let s = series.find(f => f.name == r.name)
+          if (s == null) {
+            s = { name: r.name, data: [] }
+            series.push(s)
+          };
+          s.data.push(r.mean)
+        }
+
+      }
+
+      const options = {
+        chart: { title: 'Benchmark results - ' + lastEvent.createdAt.slice(0, 10), width: 1000, height: 500 },
+        legend: {
+          align: 'bottom',
+        },
+      }
+      const data = { categories, series }
+      const el = document.getElementById('benchmarks');
+      const chart = new toastui.Chart.lineChart({ el, data, options })
+    })
+  <\/script>
+</head>
+
+<body>
+  <div id="benchmarks"></div>
+</body>
+
+</html>`;
 
 // src/git.ts
 var github = __toModule(require_github());
@@ -5001,6 +5051,7 @@ async function main() {
   var _a, _b;
   const BenchmarkConfig = core2.getInput("benchmark-config");
   const BenchmarkFile = core2.getInput("benchmark-output");
+  const BenchmarkHtmlFile = core2.getInput("benchmark-html");
   const Count = parseInt(core2.getInput("count"), 10);
   const workspace = process.env.GITHUB_WORKSPACE;
   if (workspace == null)
@@ -5029,6 +5080,9 @@ async function main() {
       ...res
     });
   }
+  const masterBranch = core2.getInput("master-branch");
+  const isMasterBranch = masterBranch === github2.context.ref;
+  core2.info(`Check branch : ${masterBranch} vs ${github2.context.ref}, isMaster: ${isMasterBranch}`);
   const benchmarkBranch = core2.getInput("benchmark-branch");
   core2.debug("Checkout benchmark branch: " + benchmarkBranch);
   git.init();
@@ -5044,7 +5098,12 @@ async function main() {
   while (Count > 0 && existing.length > Count)
     existing.pop();
   await import_fs3.promises.writeFile(BenchmarkFile, JSON.stringify(existing, null, 2));
-  if (core2.getBooleanInput("publish")) {
+  if (isMasterBranch) {
+    const htmlExists = await fileExists(BenchmarkHtmlFile);
+    if (!htmlExists) {
+      await import_fs3.promises.writeFile(BenchmarkHtmlFile, BenchmarkHtml);
+      git.add(BenchmarkHtmlFile);
+    }
     core2.debug("Pushing changes to branch: " + benchmarkBranch);
     git.add(BenchmarkFile);
     git.commit("benchmark: publish for " + git.hash);
