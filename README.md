@@ -9,6 +9,8 @@ Example Repo [Actions](https://github.com/blacha/hyperfine-action-test/actions)
 
 Example output [Benchmarks](https://blacha.github.io/hyperfine-action-test/benchmarks.html)
 
+![BenchmarksChart](./ExampleChart.png)
+
 
 Inspired by the [Denoland](https://github.com/denoland/deno) benchmark [suite](https://deno.land/benchmarks)
 
