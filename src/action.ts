@@ -1,4 +1,5 @@
 import * as core from '@actions/core';
+import * as github from '@actions/github';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { Hyperfine } from '.';
@@ -98,6 +99,9 @@ async function main(): Promise<void> {
       ...res,
     });
   }
+  const masterBranch = core.getInput('master-branch');
+  const isMasterBranch = masterBranch === github.context.ref;
+  core.info(`Check branch : ${masterBranch} vs ${github.context.ref}, isMaster: ${isMasterBranch}`);
 
   const benchmarkBranch = core.getInput('benchmark-branch');
 
@@ -118,7 +122,7 @@ async function main(): Promise<void> {
 
   await fs.writeFile(BenchmarkFile, JSON.stringify(existing, null, 2));
 
-  if (core.getBooleanInput('publish')) {
+  if (isMasterBranch) {
     const htmlExists = await fileExists(BenchmarkHtmlFile);
     if (!htmlExists) {
       await fs.writeFile(BenchmarkHtmlFile, BenchmarkHtml);
