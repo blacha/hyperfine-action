@@ -335,10 +335,10 @@ Support boolean input list: \`true | True | TRUE | false | False | FALSE\``);
       return process.env["RUNNER_DEBUG"] === "1";
     }
     exports.isDebug = isDebug;
-    function debug2(message) {
+    function debug3(message) {
       command_1.issueCommand("debug", {}, message);
     }
-    exports.debug = debug2;
+    exports.debug = debug3;
     function error(message, properties = {}) {
       command_1.issueCommand("error", utils_1.toCommandProperties(properties), message instanceof Error ? message.toString() : message);
     }
@@ -599,7 +599,7 @@ var require_tunnel = __commonJS({
         connectOptions.headers = connectOptions.headers || {};
         connectOptions.headers["Proxy-Authorization"] = "Basic " + new Buffer(connectOptions.proxyAuth).toString("base64");
       }
-      debug2("making CONNECT request");
+      debug3("making CONNECT request");
       var connectReq = self.request(connectOptions);
       connectReq.useChunkedEncodingByDefault = false;
       connectReq.once("response", onResponse);
@@ -619,7 +619,7 @@ var require_tunnel = __commonJS({
         connectReq.removeAllListeners();
         socket.removeAllListeners();
         if (res.statusCode !== 200) {
-          debug2("tunneling socket could not be established, statusCode=%d", res.statusCode);
+          debug3("tunneling socket could not be established, statusCode=%d", res.statusCode);
           socket.destroy();
           var error = new Error("tunneling socket could not be established, statusCode=" + res.statusCode);
           error.code = "ECONNRESET";
@@ -628,7 +628,7 @@ var require_tunnel = __commonJS({
           return;
         }
         if (head.length > 0) {
-          debug2("got illegal response body from proxy");
+          debug3("got illegal response body from proxy");
           socket.destroy();
           var error = new Error("got illegal response body from proxy");
           error.code = "ECONNRESET";
@@ -636,13 +636,13 @@ var require_tunnel = __commonJS({
           self.removeSocket(placeholder);
           return;
         }
-        debug2("tunneling connection has established");
+        debug3("tunneling connection has established");
         self.sockets[self.sockets.indexOf(placeholder)] = socket;
         return cb(socket);
       }
       function onError(cause) {
         connectReq.removeAllListeners();
-        debug2("tunneling socket could not be established, cause=%s\n", cause.message, cause.stack);
+        debug3("tunneling socket could not be established, cause=%s\n", cause.message, cause.stack);
         var error = new Error("tunneling socket could not be established, cause=" + cause.message);
         error.code = "ECONNRESET";
         options.request.emit("error", error);
@@ -700,9 +700,9 @@ var require_tunnel = __commonJS({
       }
       return target;
     }
-    var debug2;
+    var debug3;
     if (process.env.NODE_DEBUG && /\btunnel\b/.test(process.env.NODE_DEBUG)) {
-      debug2 = function() {
+      debug3 = function() {
         var args = Array.prototype.slice.call(arguments);
         if (typeof args[0] === "string") {
           args[0] = "TUNNEL: " + args[0];
@@ -712,10 +712,10 @@ var require_tunnel = __commonJS({
         console.error.apply(console, args);
       };
     } else {
-      debug2 = function() {
+      debug3 = function() {
       };
     }
-    exports.debug = debug2;
+    exports.debug = debug3;
   }
 });
 
@@ -4854,7 +4854,7 @@ var require_github = __commonJS({
 
 // src/action.ts
 __markAsModule(exports);
-var core = __toModule(require_core());
+var core2 = __toModule(require_core());
 var import_fs3 = __toModule(require("fs"));
 var path2 = __toModule(require("path"));
 
@@ -4928,6 +4928,7 @@ var Hyperfine = {
 
 // src/git.ts
 var github = __toModule(require_github());
+var core = __toModule(require_core());
 var import_child_process2 = __toModule(require("child_process"));
 var RemoteName = "hyperfine-action-remote";
 var Git = class {
@@ -4935,7 +4936,7 @@ var Git = class {
     this.token = token;
   }
   git(...args) {
-    console.log("git", args);
+    core.debug("git :" + JSON.stringify(args));
     return (0, import_child_process2.execFileSync)("git", args).toString().trim();
   }
   async init() {
@@ -4970,12 +4971,8 @@ var Git = class {
   add(...files) {
     this.git("add", ...files);
   }
-  status() {
-    console.log(this.git("status"));
-  }
   commit(message) {
     this.git("commit", "-m", message);
-    console.log(this.git("show"));
   }
   push(branchName) {
     this.git("push", RemoteName, `HEAD:${branchName}`);
@@ -5002,9 +4999,9 @@ async function getExistingBenchmarks(benchmarkFile) {
 }
 async function main() {
   var _a, _b;
-  const BenchmarkConfig = core.getInput("benchmark-config");
-  const BenchmarkFile = core.getInput("benchmark-output");
-  const Count = parseInt(core.getInput("count"), 10);
+  const BenchmarkConfig = core2.getInput("benchmark-config");
+  const BenchmarkFile = core2.getInput("benchmark-output");
+  const Count = parseInt(core2.getInput("count"), 10);
   const workspace = process.env.GITHUB_WORKSPACE;
   if (workspace == null)
     throw new Error(`Failed to read workspace "$GITHUB_WORKSPACE"`);
@@ -5015,14 +5012,14 @@ async function main() {
   const config = JSON.parse((await import_fs3.promises.readFile(configPath)).toString());
   if (!isHyperfineConfig(config))
     throw new Error(`Config file: ${configPath} is not a JSON array`);
-  const git = new Git(core.getInput("github-token"));
+  const git = new Git(core2.getInput("github-token"));
   const benchmark = {
     hash: git.hash,
     createdAt: new Date().toISOString(),
     results: []
   };
   for (const suite of config) {
-    core.debug(`Starting benchmark: ${suite.name}`);
+    core2.debug(`Starting benchmark: ${suite.name}`);
     const res = await Hyperfine.run(suite.command);
     const count = (_b = (_a = res.times) == null ? void 0 : _a.length) != null ? _b : 0;
     delete res.times;
@@ -5032,14 +5029,14 @@ async function main() {
       ...res
     });
   }
-  const benchmarkBranch = core.getInput("benchmark-branch");
-  core.debug("Checkout benchmark branch: " + benchmarkBranch);
+  const benchmarkBranch = core2.getInput("benchmark-branch");
+  core2.debug("Checkout benchmark branch: " + benchmarkBranch);
   git.init();
   git.fetch();
   try {
     git.checkout(benchmarkBranch);
   } catch (e) {
-    core.warning(`Failed to checkout benchmark branch: ${benchmarkBranch} skipping comparision`);
+    core2.warning(`Failed to checkout benchmark branch: ${benchmarkBranch} skipping comparision`);
     return;
   }
   const existing = await getExistingBenchmarks(BenchmarkFile);
@@ -5047,16 +5044,16 @@ async function main() {
   while (Count > 0 && existing.length > Count)
     existing.pop();
   await import_fs3.promises.writeFile(BenchmarkFile, JSON.stringify(existing, null, 2));
-  if (core.getBooleanInput("publish")) {
-    core.debug("Pushing changes to branch: " + benchmarkBranch);
+  if (core2.getBooleanInput("publish")) {
+    core2.debug("Pushing changes to branch: " + benchmarkBranch);
     git.add(BenchmarkFile);
     git.commit("benchmark: publish for " + git.hash);
     git.push(benchmarkBranch);
   } else {
-    core.debug("Skipping publish");
+    core2.debug("Skipping publish");
   }
 }
-main().catch((e) => core.setFailed(e.message));
+main().catch((e) => core2.setFailed(e.message));
 /*!
  * is-plain-object <https://github.com/jonschlinkert/is-plain-object>
  *
