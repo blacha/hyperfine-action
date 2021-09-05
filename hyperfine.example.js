@@ -1,7 +1,4 @@
-module.exports = [{
-    name: 'sleep',
-    command: 'sleep 0.1'
-}, {
-    name: 'node',
-    command: 'node -e "console.log()"'
-}]
+module.exports = [
+  { name: 'sleep', command: 'sleep 0.1' },
+  { name: 'node', command: 'node -e "console.log()"' },
+];

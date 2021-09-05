@@ -13,24 +13,21 @@ Inspired by the [Denoland](https://github.com/denoland/deno) benchmark [suite](h
 Create a `.hyperfine.js`
 
 ```javascript
-module.exports = [{
-    name: 'Sleep 100ms',
-    command: 'sleep 0.1'
-}, {
-    name: 'Test index',
-    command: 'node index.js'
-}]
+module.exports = [
+  { name: 'Sleep 100ms', command: 'sleep 0.1' }, 
+  { name: 'Test index', command: 'node index.js'}
+]
 ```
 
 Add the action to your github action
 ```yaml
-    - uses: blacha/hyperfine-action@releases/v1
+    - uses: blacha/hyperfine-action@v1
 ```
 
 output
 
 ```
-Run blacha/hyperfine-action@releases/v1
+Run blacha/hyperfine-action@v1
 Starting benchmark Sleep 100ms
 Benchmark #1: sleep 0.1
   Time (mean ± σ):     101.2 ms ±   0.1 ms    [User: 1.0 ms, System: 0.3 ms]
