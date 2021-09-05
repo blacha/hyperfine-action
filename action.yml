@@ -11,9 +11,6 @@ inputs:
   count:
     description: Number of past runs to keep (`0` keeps everything)
     default: 100
-  commit-message:
-    description: the commit message for the benchmark update
-    default: 'Update benchmarks'
   benchmark-branch:
     description: 'Branch to use for benchmarks'
     required: false
