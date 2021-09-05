@@ -2,6 +2,7 @@ import * as core from '@actions/core';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { Hyperfine } from '.';
+import { BenchmarkHtml } from './benchmark.template';
 import { fileExists } from './file';
 import { Git } from './git';
 
@@ -64,8 +65,8 @@ async function getExistingBenchmarks(benchmarkFile: string): Promise<HyperfineRe
 async function main(): Promise<void> {
   const BenchmarkConfig = core.getInput('benchmark-config');
   const BenchmarkFile = core.getInput('benchmark-output');
+  const BenchmarkHtmlFile = core.getInput('benchmark-html');
   const Count = parseInt(core.getInput('count'), 10);
-  // const CommitMessage = core.getInput('commit_message');
 
   const workspace = process.env.GITHUB_WORKSPACE;
   if (workspace == null) throw new Error(`Failed to read workspace "$GITHUB_WORKSPACE"`);
@@ -118,6 +119,12 @@ async function main(): Promise<void> {
   await fs.writeFile(BenchmarkFile, JSON.stringify(existing, null, 2));
 
   if (core.getBooleanInput('publish')) {
+    const htmlExists = await fileExists(BenchmarkHtmlFile);
+    if (!htmlExists) {
+      await fs.writeFile(BenchmarkHtmlFile, BenchmarkHtml);
+      git.add(BenchmarkHtmlFile);
+    }
+
     core.debug('Pushing changes to branch: ' + benchmarkBranch);
     git.add(BenchmarkFile);
     git.commit('benchmark: publish for ' + git.hash);
