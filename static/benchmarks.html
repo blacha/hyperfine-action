@@ -1,0 +1,48 @@
+<html>
+
+<head>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@toast-ui/chart@4.3.6/dist/toastui-chart.css"
+    integrity="sha256-Tjub96L9YQYpbzxXJJcQto8bJjzmGy5SPH6kn5SVe+Q=" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/@toast-ui/chart@4.3.6/dist/toastui-chart.min.js"
+    integrity="sha256-ZtanUf/tmM9btpMqLSoXOA2ITHM2bR6JNA1jpNwbquA=" crossorigin="anonymous"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const res = await fetch('./benchmarks.json').then(c => c.json());
+
+      let lastEvent = null;
+
+      const categories = [];
+      const series = [];
+
+      for (const d of res) {
+        if (lastEvent == null || d.createdAt > lastEvent.date) lastEvent = d;
+        categories.push(d.createdAt.slice(0, 10) + ' - ' + d.hash.slice(0, 8));
+        for (const r of d.results) {
+          let s = series.find(f => f.name == r.name)
+          if (s == null) {
+            s = { name: r.name, data: [] }
+            series.push(s)
+          };
+          s.data.push(r.mean)
+        }
+
+      }
+
+      const options = {
+        chart: { title: 'Benchmark results - ' + lastEvent.createdAt.slice(0, 10), width: 1000, height: 500 },
+        legend: {
+          align: 'bottom',
+        },
+      }
+      const data = { categories, series }
+      const el = document.getElementById('benchmarks');
+      const chart = new toastui.Chart.lineChart({ el, data, options })
+    })
+  </script>
+</head>
+
+<body>
+  <div id="benchmarks"></div>
+</body>
+
+</html>
