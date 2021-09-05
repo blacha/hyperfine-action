@@ -1,4 +1,5 @@
 import * as github from '@actions/github';
+import * as core from '@actions/core';
 import { execFileSync } from 'child_process';
 
 const RemoteName = 'hyperfine-action-remote';
@@ -11,7 +12,7 @@ export class Git {
   }
 
   private git(...args: string[]): string {
-    console.log('git', args);
+    core.debug('git :' + JSON.stringify(args));
     return execFileSync('git', args).toString().trim();
   }
 
@@ -56,13 +57,8 @@ export class Git {
     this.git('add', ...files);
   }
 
-  status(): void {
-    console.log(this.git('status'));
-  }
-
   commit(message: string): void {
     this.git('commit', '-m', message);
-    console.log(this.git('show'));
   }
 
   push(branchName: string): void {
