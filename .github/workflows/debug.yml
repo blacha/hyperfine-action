@@ -1,6 +1,4 @@
-name: Main
-
-on: [push]
+name: Debug
 
 jobs:
   build:
