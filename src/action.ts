@@ -1,9 +1,9 @@
 import * as core from '@actions/core';
-import { execFileSync } from 'child_process';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { Hyperfine } from '.';
 import { fileExists } from './file';
+import { Git } from './git';
 
 /** Typings for .hyperfine.js */
 export type HyperfineConfigFile = HyperfineConfig[];
@@ -51,9 +51,7 @@ function isHyperfineConfig(obj: Record<string, any>): obj is HyperfineConfig[] {
  */
 async function getExistingBenchmarks(benchmarkFile: string): Promise<HyperfineResult[]> {
   const isExistingBenchmarks = await fileExists(benchmarkFile);
-  if (!isExistingBenchmarks) {
-    return [];
-  }
+  if (!isExistingBenchmarks) return [];
 
   const data = await fs.readFile(benchmarkFile);
   const res = JSON.parse(data.toString());
@@ -70,31 +68,26 @@ async function main(): Promise<void> {
   // const CommitMessage = core.getInput('commit_message');
 
   const workspace = process.env.GITHUB_WORKSPACE;
-  if (workspace == null) {
-    throw new Error(`Failed to read workspace "$GITHUB_WORKSPACE"`);
-  }
+  if (workspace == null) throw new Error(`Failed to read workspace "$GITHUB_WORKSPACE"`);
 
   const configPath = path.join(workspace, BenchmarkConfig);
 
   const isConfigFound = await fileExists(configPath);
-  if (!isConfigFound) {
-    throw new Error(`Config file: ${configPath} not found`);
-  }
+  if (!isConfigFound) throw new Error(`Config file: ${configPath} not found`);
 
   const config = JSON.parse((await fs.readFile(configPath)).toString());
-  if (!isHyperfineConfig(config)) {
-    throw new Error(`Config file: ${configPath} is not a JSON array`);
-  }
+  if (!isHyperfineConfig(config)) throw new Error(`Config file: ${configPath} is not a JSON array`);
 
-  const commitHash = execFileSync('git', ['rev-parse', 'HEAD']).toString().trim();
+  const git = new Git(core.getInput('github-token'));
+
   const benchmark: HyperfineResult = {
-    hash: commitHash,
+    hash: git.hash,
     createdAt: new Date().toISOString(),
     results: [],
   };
 
   for (const suite of config) {
-    console.log('Starting benchmark', suite.name);
+    core.debug(`Starting benchmark: ${suite.name}`);
     const res = await Hyperfine.run(suite.command);
     const count = res.times?.length ?? 0;
     delete res.times;
@@ -105,12 +98,33 @@ async function main(): Promise<void> {
     });
   }
 
+  const benchmarkBranch = core.getInput('benchmark-branch');
+
+  core.debug('Checkout benchmark branch: ' + benchmarkBranch);
+  git.init();
+  git.fetch();
+  try {
+    git.checkout(benchmarkBranch);
+  } catch (e) {
+    core.warning(`Failed to checkout benchmark branch: ${benchmarkBranch} skipping comparision`);
+    return;
+  }
+
   const existing = await getExistingBenchmarks(BenchmarkFile);
   existing.unshift(benchmark);
   // Trim the results
   while (Count > 0 && existing.length > Count) existing.pop();
 
   await fs.writeFile(BenchmarkFile, JSON.stringify(existing, null, 2));
+
+  if (core.getBooleanInput('publish')) {
+    core.debug('Pushing changes to branch: ' + benchmarkBranch);
+    git.add(BenchmarkFile);
+    git.commit('benchmark: publish for ' + git.hash);
+    git.push(benchmarkBranch);
+  } else {
+    core.debug('Skipping publish');
+  }
 }
 
 main().catch((e: Error) => core.setFailed(e.message));
