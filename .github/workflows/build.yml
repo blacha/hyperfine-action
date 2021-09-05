@@ -27,6 +27,4 @@ jobs:
 
     - name: Test Action
       uses: ./
-      with:
-        publish: false
 
