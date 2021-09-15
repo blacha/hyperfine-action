@@ -1,6 +1,6 @@
 # hyperfine-action
 
-[![Build Status](https://github.com/blacha/cogeotiff/workflows/Main/badge.svg)](https://github.com/blacha/cogeotiff/actions)
+[![Build](https://github.com/blacha/hyperfine-action/actions/workflows/build.yml/badge.svg)](https://github.com/blacha/hyperfine-action/actions/workflows/build.yml)
 
 
 Runs [Hyperfine](https://github.com/sharkdp/hyperfine) as a github action and stores the result as a Github page.
