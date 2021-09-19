@@ -1,29 +1,29 @@
 name: hyperfine benchmarking
-description: 'Runs hyperfine benchmarking across provided input files'
-author: 'Blayne Chard <blayne@chard.com>'
+description: "Runs hyperfine benchmarking across provided input files"
+author: "Blayne Chard <blayne@chard.com>"
 inputs:
   benchmark-config:
     description: Benchmark file
-    default: '.hyperfine.json'
+    default: ".hyperfine.json"
   benchmark-output:
     description: Benchmark file
-    default: 'benchmarks.json'
+    default: "benchmarks.json"
   benchmark-html:
     description: Benchmark file
-    default: 'benchmarks.html'
+    default: "benchmarks.html"
   count:
     description: Number of past runs to keep (`0` keeps everything)
     default: 500
   benchmark-branch:
-    description: 'Branch to use for benchmarks'
+    description: "Branch to use for benchmarks"
     required: false
-    default: 'gh-pages'
+    default: "gh-pages"
   github-token:
     description: Token to use to add comments to pull requests
     default: ${{ github.token }}
   master-branch:
     description: Branch to use as a base for benchmarks
-    default: 'master'
+    default: "master"
 runs:
-  using: 'node12'
-  main: 'dist/action.js'
+  using: "node12"
+  main: "dist/action.js"
