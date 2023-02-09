@@ -7,20 +7,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js 14.x
-      uses: actions/setup-node@v2
-      with:
-        node-version: 14.x
-
-    - name: Install
-      run: yarn install
-
-    - name: Lint
-      run: yarn run lint
-
-    - name: Build
-      run: yarn run build
+    - uses: linz/action-typescript@v2
 
     - name: Bundle
       run: yarn run bundle
