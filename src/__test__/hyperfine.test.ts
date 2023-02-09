@@ -1,4 +1,3 @@
-import 'source-map-support/register';
 import o from 'ospec';
 import { Hyperfine } from '../index';
 

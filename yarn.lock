@@ -296,15 +296,15 @@
   resolved "https://registry.yarnpkg.com/@types/json-schema/-/json-schema-7.0.11.tgz#d421b6c527a3037f7c84433fd2c4229e016863d3"
   integrity sha512-wOuvG1SN4Us4rez+tylwwwCV1psiNVOkJeM3AUWUNWg/jDQY2+HE/444y5gc+jBmRqASOm2Oeh5c1axHobwRKQ==
 
-"@types/node@^12.0.7":
-  version "12.20.23"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.20.23.tgz#d0d5885bb885ee9b1ed114a04ea586540a1b2e2a"
-  integrity sha512-FW0q7NI8UnjbKrJK8NGr6QXY69ATw9IFe6ItIo5yozPwA9DU/xkhiPddctUVyrmFXvyFYerYgQak/qu200UBDw==
+"@types/node@^18.13.0":
+  version "18.13.0"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.13.0.tgz#0400d1e6ce87e9d3032c19eb6c58205b0d3f7850"
+  integrity sha512-gC3TazRzGoOnoKAhUx+Q0t8S9Tzs74z7m0ipwGpSqQrleP14hKxP4/JUeEQcD3W1/aIpnWl8pHowI7WokuZpXg==
 
-"@types/ospec@^4.0.0":
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/@types/ospec/-/ospec-4.0.2.tgz#cb516a7c576df74d41d9fd4c6f810241750af31c"
-  integrity sha512-AFAcbt+oRaDd9zAPIW583oKNKUHWeisAI/soH3odv0Jm9ZFHGPYhU6L769StwOxxtaW8fu5i5SXqLBx7u+7lSA==
+"@types/ospec@^4.0.5":
+  version "4.0.5"
+  resolved "https://registry.yarnpkg.com/@types/ospec/-/ospec-4.0.5.tgz#d48477b6c93cb7da4f5bdf412138b4d33a844f2e"
+  integrity sha512-wEbcHLUCHEDG4018aqTJLiG4KgRO1M7DomhAF4CPQ+9ZwpQB45kuHVZNvVOf7eltzsyLHNfrRg1IOc3DYEIu1w==
 
 "@types/semver@^7.3.12":
   version "7.3.13"
@@ -1006,10 +1006,10 @@ optionator@^0.9.1:
     type-check "^0.4.0"
     word-wrap "^1.2.3"
 
-ospec@^4.0.0:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/ospec/-/ospec-4.1.1.tgz#52faa97b2de3bec5b447795b0b460da5c0ebb4a9"
-  integrity sha512-fgWIk1eLDidfB+ixTo3PL3HuuO6iX2LhgWxdnWwqRu2rJdpTowgeAP0RHgt3DSUVyszs964fMuq1tB7Ov2C38A==
+ospec@^4.1.7:
+  version "4.1.7"
+  resolved "https://registry.yarnpkg.com/ospec/-/ospec-4.1.7.tgz#bd0e5142ad5181f7ebb5ed3ef27c90717eee0431"
+  integrity sha512-NPUfOn3/4+xZBolrIxRDrdK+RIPkEZAzEN2Dr7ui0WIXzbo6EDui4beW0mSe6WQEdRSQ2JpkooHsv9k5M9ErbA==
   dependencies:
     glob "^7.1.3"
 
