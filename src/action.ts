@@ -2,10 +2,11 @@ import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { Hyperfine } from '.';
-import { BenchmarkHtml } from './benchmark.template';
-import { fileExists } from './file';
-import { Git } from './git';
+
+import { BenchmarkHtml } from './benchmark.template.js';
+import { fileExists } from './file.js';
+import { Git } from './git.js';
+import { Hyperfine } from './index.js';
 
 /** Typings for .hyperfine.js */
 export type HyperfineConfigFile = HyperfineConfig[];
@@ -41,6 +42,7 @@ export interface HyperfineResult {
   results: HyperfineResultSuite[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isHyperfineConfig(obj: Record<string, any>): obj is HyperfineConfig[] {
   if (!Array.isArray(obj)) {
     return false;
@@ -69,7 +71,7 @@ async function main(): Promise<void> {
   const BenchmarkHtmlFile = core.getInput('benchmark-html');
   const Count = parseInt(core.getInput('count'), 10);
 
-  const workspace = process.env.GITHUB_WORKSPACE;
+  const workspace = process.env['GITHUB_WORKSPACE'];
   if (workspace == null) throw new Error(`Failed to read workspace "$GITHUB_WORKSPACE"`);
 
   const configPath = path.join(workspace, BenchmarkConfig);

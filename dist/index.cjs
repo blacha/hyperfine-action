@@ -968,12 +968,12 @@ var require_lib = __commonJS({
     var RetryableHttpVerbs = ["OPTIONS", "GET", "DELETE", "HEAD"];
     var ExponentialBackoffCeiling = 10;
     var ExponentialBackoffTimeSlice = 5;
-    var HttpClientError = class extends Error {
+    var HttpClientError = class _HttpClientError extends Error {
       constructor(message, statusCode) {
         super(message);
         this.name = "HttpClientError";
         this.statusCode = statusCode;
-        Object.setPrototypeOf(this, HttpClientError.prototype);
+        Object.setPrototypeOf(this, _HttpClientError.prototype);
       }
     };
     exports.HttpClientError = HttpClientError;
@@ -1564,13 +1564,13 @@ var require_oidc_utils = __commonJS({
     var http_client_1 = require_lib();
     var auth_1 = require_auth();
     var core_1 = require_core();
-    var OidcClient = class {
+    var OidcClient = class _OidcClient {
       static createHttpClient(allowRetry = true, maxRetry = 10) {
         const requestOptions = {
           allowRetries: allowRetry,
           maxRetries: maxRetry
         };
-        return new http_client_1.HttpClient("actions/oidc-client", [new auth_1.BearerCredentialHandler(OidcClient.getRequestToken())], requestOptions);
+        return new http_client_1.HttpClient("actions/oidc-client", [new auth_1.BearerCredentialHandler(_OidcClient.getRequestToken())], requestOptions);
       }
       static getRequestToken() {
         const token = process.env["ACTIONS_ID_TOKEN_REQUEST_TOKEN"];
@@ -1589,13 +1589,13 @@ var require_oidc_utils = __commonJS({
       static getCall(id_token_url) {
         var _a;
         return __awaiter(this, void 0, void 0, function* () {
-          const httpclient = OidcClient.createHttpClient();
+          const httpclient = _OidcClient.createHttpClient();
           const res = yield httpclient.getJson(id_token_url).catch((error) => {
             throw new Error(`Failed to get ID Token. 
  
         Error Code : ${error.statusCode}
  
-        Error Message: ${error.result.message}`);
+        Error Message: ${error.message}`);
           });
           const id_token = (_a = res.result) === null || _a === void 0 ? void 0 : _a.value;
           if (!id_token) {
@@ -1607,13 +1607,13 @@ var require_oidc_utils = __commonJS({
       static getIDToken(audience) {
         return __awaiter(this, void 0, void 0, function* () {
           try {
-            let id_token_url = OidcClient.getIDTokenUrl();
+            let id_token_url = _OidcClient.getIDTokenUrl();
             if (audience) {
               const encodedAudience = encodeURIComponent(audience);
               id_token_url = `${id_token_url}&audience=${encodedAudience}`;
             }
             core_1.debug(`ID token url is ${id_token_url}`);
-            const id_token = yield OidcClient.getCall(id_token_url);
+            const id_token = yield _OidcClient.getCall(id_token_url);
             core_1.setSecret(id_token);
             return id_token;
           } catch (error) {
@@ -4592,7 +4592,7 @@ var require_lib3 = __commonJS({
     var Readable = Stream.Readable;
     var BUFFER = Symbol("buffer");
     var TYPE = Symbol("type");
-    var Blob = class {
+    var Blob = class _Blob {
       constructor() {
         this[TYPE] = "";
         const blobParts = arguments[0];
@@ -4611,7 +4611,7 @@ var require_lib3 = __commonJS({
               buffer = Buffer.from(element.buffer, element.byteOffset, element.byteLength);
             } else if (element instanceof ArrayBuffer) {
               buffer = Buffer.from(element);
-            } else if (element instanceof Blob) {
+            } else if (element instanceof _Blob) {
               buffer = element[BUFFER];
             } else {
               buffer = Buffer.from(typeof element === "string" ? element : String(element));
@@ -4673,7 +4673,7 @@ var require_lib3 = __commonJS({
         const span = Math.max(relativeEnd - relativeStart, 0);
         const buffer = this[BUFFER];
         const slicedBuffer = buffer.slice(relativeStart, relativeStart + span);
-        const blob = new Blob([], { type: arguments[2] });
+        const blob = new _Blob([], { type: arguments[2] });
         blob[BUFFER] = slicedBuffer;
         return blob;
       }
@@ -5050,7 +5050,7 @@ var require_lib3 = __commonJS({
       return void 0;
     }
     var MAP = Symbol("map");
-    var Headers = class {
+    var Headers = class _Headers {
       /**
        * Headers class
        *
@@ -5060,7 +5060,7 @@ var require_lib3 = __commonJS({
       constructor() {
         let init = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : void 0;
         this[MAP] = /* @__PURE__ */ Object.create(null);
-        if (init instanceof Headers) {
+        if (init instanceof _Headers) {
           const rawHeaders = init.raw();
           const headerNames = Object.keys(rawHeaders);
           for (const headerName of headerNames) {
@@ -5329,7 +5329,7 @@ var require_lib3 = __commonJS({
     }
     var INTERNALS$1 = Symbol("Response internals");
     var STATUS_CODES = http.STATUS_CODES;
-    var Response = class {
+    var Response = class _Response {
       constructor() {
         let body = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : null;
         let opts = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
@@ -5377,7 +5377,7 @@ var require_lib3 = __commonJS({
        * @return  Response
        */
       clone() {
-        return new Response(clone(this), {
+        return new _Response(clone(this), {
           url: this.url,
           status: this.status,
           statusText: this.statusText,
@@ -5421,7 +5421,7 @@ var require_lib3 = __commonJS({
       const proto = signal && typeof signal === "object" && Object.getPrototypeOf(signal);
       return !!(proto && proto.constructor.name === "AbortSignal");
     }
-    var Request = class {
+    var Request = class _Request {
       constructor(input) {
         let init = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
         let parsedURL;
@@ -5491,7 +5491,7 @@ var require_lib3 = __commonJS({
        * @return  Request
        */
       clone() {
-        return new Request(this);
+        return new _Request(this);
       }
     };
     Body.mixIn(Request.prototype);
@@ -7757,78 +7757,10 @@ var require_github = __commonJS({
 // src/action.ts
 var action_exports = {};
 module.exports = __toCommonJS(action_exports);
-var core2 = __toESM(require_core());
-var github2 = __toESM(require_github());
+var core2 = __toESM(require_core(), 1);
+var github2 = __toESM(require_github(), 1);
 var import_fs3 = require("fs");
-var path2 = __toESM(require("path"));
-
-// src/hyperfine/hyperfine.run.ts
-var import_child_process = require("child_process");
-var import_crypto4 = require("crypto");
-var import_fs2 = require("fs");
-var path = __toESM(require("path"));
-
-// src/file.ts
-var import_fs = require("fs");
-async function fileExists(fileName) {
-  try {
-    await import_fs.promises.stat(fileName);
-    return true;
-  } catch (e) {
-    return false;
-  }
-}
-
-// src/hyperfine/hyperfine.run.ts
-async function findHyperfine() {
-  const HyperFineCommand = "./static/hyperfine";
-  const isHyperfineInstalled = await fileExists(HyperFineCommand);
-  if (isHyperfineInstalled) {
-    return HyperFineCommand;
-  }
-  const upCommand = path.join(__dirname, "..", HyperFineCommand);
-  const isHyperfineInstalledUp = await fileExists(upCommand);
-  if (isHyperfineInstalledUp) {
-    return upCommand;
-  }
-  throw new Error("Failed to open hyperfine @ " + HyperFineCommand);
-}
-async function waitForChildProcess(cmd) {
-  const child = (0, import_child_process.exec)(cmd);
-  const output = [];
-  if (child.stdout == null) {
-    throw new Error("Child missing stdout");
-  }
-  child.stdout.on("data", (data) => output.push(data));
-  return new Promise((resolve, reject) => {
-    child.addListener("error", reject);
-    child.addListener("exit", (code) => {
-      if (code === 0) {
-        return resolve(output.join(""));
-      }
-      return reject(new Error("Hyperfine exited with code: " + code));
-    });
-  });
-}
-async function runHyperfine(cmd) {
-  const HyperFineCommand = await findHyperfine();
-  const outputJsonFile = "./" + (0, import_crypto4.randomBytes)(10).toString("hex") + ".json";
-  const hyperfineExecute = [HyperFineCommand, `--export-json ${outputJsonFile}`, `'${cmd}'`];
-  const buffer = await waitForChildProcess(hyperfineExecute.join(" "));
-  console.log(buffer);
-  const outputJsonBuffer = await import_fs2.promises.readFile(outputJsonFile);
-  try {
-    const res = JSON.parse(outputJsonBuffer.toString());
-    return res.results[0];
-  } finally {
-    await import_fs2.promises.unlink(outputJsonFile);
-  }
-}
-
-// src/index.ts
-var Hyperfine = {
-  run: runHyperfine
-};
+var path2 = __toESM(require("path"), 1);
 
 // src/benchmark.template.ts
 var BenchmarkHtml = `<html>
@@ -7895,20 +7827,36 @@ var BenchmarkHtml = `<html>
 
 </html>`;
 
+// src/file.ts
+var import_fs = require("fs");
+async function fileExists(fileName) {
+  try {
+    await import_fs.promises.stat(fileName);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 // src/git.ts
-var github = __toESM(require_github());
-var core = __toESM(require_core());
-var import_child_process2 = require("child_process");
+var core = __toESM(require_core(), 1);
+var github = __toESM(require_github(), 1);
+var import_child_process = require("child_process");
 var RemoteName = "hyperfine-action-remote";
 var Git = class {
+  token;
   constructor(token) {
     this.token = token;
   }
   git(...args) {
     core.debug("git :" + JSON.stringify(args));
-    return (0, import_child_process2.execFileSync)("git", args).toString().trim();
+    return (0, import_child_process.execFileSync)("git", args).toString().trim();
   }
   async init() {
+    try {
+      this.git("remote", "remove", RemoteName);
+    } catch (e) {
+    }
     this.git("remote", "add", RemoteName, this.url);
     this.git("config", "--global", "user.name", this.actor);
     this.git("config", "--global", "user.email", this.email);
@@ -7948,6 +7896,61 @@ var Git = class {
   }
 };
 
+// src/hyperfine/hyperfine.run.ts
+var import_child_process2 = require("child_process");
+var import_crypto4 = require("crypto");
+var import_fs2 = require("fs");
+var path = __toESM(require("path"), 1);
+async function findHyperfine() {
+  const HyperFineCommand = "./static/hyperfine";
+  const isHyperfineInstalled = await fileExists(HyperFineCommand);
+  if (isHyperfineInstalled) {
+    return HyperFineCommand;
+  }
+  const upCommand = path.join(__dirname, "..", HyperFineCommand);
+  const isHyperfineInstalledUp = await fileExists(upCommand);
+  if (isHyperfineInstalledUp) {
+    return upCommand;
+  }
+  throw new Error("Failed to open hyperfine @ " + HyperFineCommand);
+}
+async function waitForChildProcess(cmd) {
+  const child = (0, import_child_process2.exec)(cmd);
+  const output = [];
+  if (child.stdout == null) {
+    throw new Error("Child missing stdout");
+  }
+  child.stdout.on("data", (data) => output.push(data));
+  return new Promise((resolve, reject) => {
+    child.addListener("error", reject);
+    child.addListener("exit", (code) => {
+      if (code === 0) {
+        return resolve(output.join(""));
+      }
+      return reject(new Error("Hyperfine exited with code: " + code));
+    });
+  });
+}
+async function runHyperfine(cmd) {
+  const HyperFineCommand = await findHyperfine();
+  const outputJsonFile = "./" + (0, import_crypto4.randomBytes)(10).toString("hex") + ".json";
+  const hyperfineExecute = [HyperFineCommand, `--export-json ${outputJsonFile}`, `'${cmd}'`];
+  const buffer = await waitForChildProcess(hyperfineExecute.join(" "));
+  console.log(buffer);
+  const outputJsonBuffer = await import_fs2.promises.readFile(outputJsonFile);
+  try {
+    const res = JSON.parse(outputJsonBuffer.toString());
+    return res.results[0];
+  } finally {
+    await import_fs2.promises.unlink(outputJsonFile);
+  }
+}
+
+// src/index.ts
+var Hyperfine = {
+  run: runHyperfine
+};
+
 // src/action.ts
 function isHyperfineConfig(obj) {
   if (!Array.isArray(obj)) {
@@ -7967,12 +7970,11 @@ async function getExistingBenchmarks(benchmarkFile) {
   return res;
 }
 async function main() {
-  var _a, _b;
   const BenchmarkConfig = core2.getInput("benchmark-config");
   const BenchmarkFile = core2.getInput("benchmark-output");
   const BenchmarkHtmlFile = core2.getInput("benchmark-html");
   const Count = parseInt(core2.getInput("count"), 10);
-  const workspace = process.env.GITHUB_WORKSPACE;
+  const workspace = process.env["GITHUB_WORKSPACE"];
   if (workspace == null)
     throw new Error(`Failed to read workspace "$GITHUB_WORKSPACE"`);
   const configPath = path2.join(workspace, BenchmarkConfig);
@@ -7991,7 +7993,7 @@ async function main() {
   for (const suite of config) {
     core2.debug(`Starting benchmark: ${suite.name}`);
     const res = await Hyperfine.run(suite.command);
-    const count = (_b = (_a = res.times) == null ? void 0 : _a.length) != null ? _b : 0;
+    const count = res.times?.length ?? 0;
     delete res.times;
     benchmark.results.push({
       name: suite.name,

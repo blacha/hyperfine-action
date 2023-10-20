@@ -1,19 +1,20 @@
-import o from 'ospec';
-import { Hyperfine } from '../index';
+import assert from 'node:assert';
+import { describe, it } from 'node:test';
 
-o.spec('Hyperfine', () => {
+import { Hyperfine } from '../index.js';
+
+describe('Hyperfine', () => {
   const VARIANCE = 0.05;
 
-  o('Should get metrics', async () => {
+  it('Should get metrics', async () => {
     const sleepTime = 0.05;
-    o.timeout(10000);
     const metrics = await Hyperfine.run(`sleep ${sleepTime}`);
 
-    o(metrics.command).equals(`sleep ${sleepTime}`);
-    o(Math.abs(metrics.mean - sleepTime) < VARIANCE).equals(true);
-    o(Math.abs(metrics.median - sleepTime) < VARIANCE).equals(true);
-    o(Math.abs(metrics.min - sleepTime) < VARIANCE).equals(true);
-    o(Math.abs(metrics.max - sleepTime) < VARIANCE).equals(true);
+    assert.equal(metrics.command, `sleep ${sleepTime}`);
+    assert.equal(Math.abs(metrics.mean - sleepTime) < VARIANCE, true);
+    assert.equal(Math.abs(metrics.median - sleepTime) < VARIANCE, true);
+    assert.equal(Math.abs(metrics.min - sleepTime) < VARIANCE, true);
+    assert.equal(Math.abs(metrics.max - sleepTime) < VARIANCE, true);
 
     console.log(metrics);
   });
