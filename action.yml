@@ -25,5 +25,5 @@ inputs:
     description: Branch to use as a base for benchmarks
     default: "master"
 runs:
-  using: "node12"
+  using: "node20"
   main: "dist/action.js"
