@@ -19,6 +19,6 @@
     "@linzjs/style": "^5.0.0",
     "@types/node": "^18.13.0",
     "@types/ospec": "^4.0.5",
-    "esbuild": "^0.17.19"
+    "esbuild": "^0.19.5"
   }
 }
