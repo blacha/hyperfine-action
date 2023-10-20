@@ -13,7 +13,7 @@ inputs:
     default: "benchmarks.html"
   count:
     description: Number of past runs to keep (`0` keeps everything)
-    default: 500
+    default: "500"
   benchmark-branch:
     description: "Branch to use for benchmarks"
     required: false
@@ -26,4 +26,4 @@ inputs:
     default: "master"
 runs:
   using: "node20"
-  main: "dist/action.cjs"
+  main: "./dist/action.cjs"
