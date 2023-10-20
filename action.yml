@@ -26,4 +26,4 @@ inputs:
     default: "master"
 runs:
   using: "node20"
-  main: "./dist/action.cjs"
+  main: "dist/index.cjs"
