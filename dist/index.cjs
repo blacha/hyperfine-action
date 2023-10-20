@@ -7858,7 +7858,10 @@ var Git = class {
     return (0, import_child_process.execFileSync)("git", args).toString().trim();
   }
   async init() {
-    this.git("remote", "remove", RemoteName);
+    try {
+      this.git("remote", "remove", RemoteName);
+    } catch (e) {
+    }
     this.git("remote", "add", RemoteName, this.url);
     this.git("config", "--global", "user.name", this.actor);
     this.git("config", "--global", "user.email", this.email);
