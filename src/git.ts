@@ -17,7 +17,11 @@ export class Git {
   }
 
   async init(): Promise<void> {
-    this.git('remote', 'remove', RemoteName);
+    try {
+      this.git('remote', 'remove', RemoteName);
+    } catch (e) {
+      // ignore if remote doesnt exist
+    }
     this.git('remote', 'add', RemoteName, this.url);
     this.git('config', '--global', 'user.name', this.actor);
     this.git('config', '--global', 'user.email', this.email);
