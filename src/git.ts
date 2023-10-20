@@ -1,5 +1,5 @@
-import * as github from '@actions/github';
 import * as core from '@actions/core';
+import * as github from '@actions/github';
 import { execFileSync } from 'child_process';
 
 const RemoteName = 'hyperfine-action-remote';

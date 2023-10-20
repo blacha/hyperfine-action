@@ -2,8 +2,9 @@ import { exec } from 'child_process';
 import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-import { fileExists } from '../file';
-import { HyperFineJsonOutput, HyperFineResult } from './hyperfine.output';
+
+import { fileExists } from '../file.js';
+import { HyperFineJsonOutput, HyperFineResult } from './hyperfine.output.js';
 
 /**
  * Sometimes we can access hyperfine with ./
@@ -57,7 +58,7 @@ export async function runHyperfine(cmd: string): Promise<HyperFineResult> {
   const outputJsonBuffer = await fs.readFile(outputJsonFile);
   try {
     const res = JSON.parse(outputJsonBuffer.toString()) as HyperFineJsonOutput;
-    return res.results[0];
+    return res.results[0]!;
   } finally {
     await fs.unlink(outputJsonFile);
   }
