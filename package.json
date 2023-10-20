@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc --pretty",
     "lint": "eslint 'src/**/*.ts' --quiet --fix",
-    "test": "ospec build/**/*.test.js",
+    "test": "node --test",
     "bundle": "npx esbuild src/action.ts --bundle --outdir=dist/ --platform=node"
   },
   "keywords": [],
@@ -18,8 +18,7 @@
     "@linzjs/style": "^3.15.0",
     "@types/node": "^18.13.0",
     "@types/ospec": "^4.0.5",
-    "esbuild": "^0.17.6",
-    "ospec": "^4.1.7"
+    "esbuild": "^0.17.6"
   },
   "dependencies": {}
 }
