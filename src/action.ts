@@ -42,7 +42,8 @@ export interface HyperfineResult {
   results: HyperfineResultSuite[];
 }
 
-function isHyperfineConfig(obj: Record<string, unknown>): obj is HyperfineConfig[] {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isHyperfineConfig(obj: Record<string, any>): obj is HyperfineConfig[] {
   if (!Array.isArray(obj)) {
     return false;
   }
