@@ -1,7 +1,7 @@
-import { exec } from 'child_process';
-import { randomBytes } from 'crypto';
-import { promises as fs } from 'fs';
-import * as path from 'path';
+import { exec } from 'node:child_process';
+import { randomBytes } from 'node:crypto';
+import { readFile, unlink } from 'node:fs/promises';
+import { join } from 'node:path';
 
 import { fileExists } from '../file.js';
 import { HyperFineJsonOutput, HyperFineResult } from './hyperfine.output.js';
@@ -18,7 +18,7 @@ async function findHyperfine(): Promise<string> {
     return HyperFineCommand;
   }
 
-  const upCommand = path.join(__dirname, '..', HyperFineCommand);
+  const upCommand = join(__dirname, '..', HyperFineCommand);
   const isHyperfineInstalledUp = await fileExists(upCommand);
   if (isHyperfineInstalledUp) {
     return upCommand;
@@ -55,11 +55,11 @@ export async function runHyperfine(cmd: string): Promise<HyperFineResult> {
   const buffer = await waitForChildProcess(hyperfineExecute.join(' '));
   console.log(buffer);
 
-  const outputJsonBuffer = await fs.readFile(outputJsonFile);
+  const outputJsonBuffer = await readFile(outputJsonFile);
   try {
     const res = JSON.parse(outputJsonBuffer.toString()) as HyperFineJsonOutput;
     return res.results[0]!;
   } finally {
-    await fs.unlink(outputJsonFile);
+    await unlink(outputJsonFile);
   }
 }

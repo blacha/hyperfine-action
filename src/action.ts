@@ -1,7 +1,8 @@
+import { readFile, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
+
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { promises as fs } from 'fs';
-import * as path from 'path';
 
 import { BenchmarkHtml } from './benchmark.template.js';
 import { fileExists } from './file.js';
@@ -57,7 +58,7 @@ async function getExistingBenchmarks(benchmarkFile: string): Promise<HyperfineRe
   const isExistingBenchmarks = await fileExists(benchmarkFile);
   if (!isExistingBenchmarks) return [];
 
-  const data = await fs.readFile(benchmarkFile);
+  const data = await readFile(benchmarkFile);
   const res = JSON.parse(data.toString());
   if (!Array.isArray(res)) {
     throw new Error(`Corrupted benchmark file, ${benchmarkFile} is not a JSON array`);
@@ -74,12 +75,12 @@ async function main(): Promise<void> {
   const workspace = process.env['GITHUB_WORKSPACE'];
   if (workspace == null) throw new Error(`Failed to read workspace "$GITHUB_WORKSPACE"`);
 
-  const configPath = path.join(workspace, BenchmarkConfig);
+  const configPath = join(workspace, BenchmarkConfig);
 
   const isConfigFound = await fileExists(configPath);
   if (!isConfigFound) throw new Error(`Config file: ${configPath} not found`);
 
-  const config = JSON.parse((await fs.readFile(configPath)).toString());
+  const config = JSON.parse((await readFile(configPath)).toString());
   if (!isHyperfineConfig(config)) throw new Error(`Config file: ${configPath} is not a JSON array`);
 
   const git = new Git(core.getInput('github-token'));
@@ -121,12 +122,12 @@ async function main(): Promise<void> {
   // Trim the results
   while (Count > 0 && existing.length > Count) existing.pop();
 
-  await fs.writeFile(BenchmarkFile, JSON.stringify(existing, null, 2));
+  await writeFile(BenchmarkFile, JSON.stringify(existing, null, 2));
 
   if (isMasterBranch) {
     const htmlExists = await fileExists(BenchmarkHtmlFile);
     if (!htmlExists) {
-      await fs.writeFile(BenchmarkHtmlFile, BenchmarkHtml);
+      await writeFile(BenchmarkHtmlFile, BenchmarkHtml);
       git.add(BenchmarkHtmlFile);
     }
 

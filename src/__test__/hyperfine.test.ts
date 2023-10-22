@@ -1,7 +1,7 @@
-import assert from 'node:assert';
+import { equal } from 'node:assert';
 import { describe, it } from 'node:test';
 
-import { Hyperfine } from '../index.js';
+import { Hyperfine } from '../index';
 
 describe('Hyperfine', () => {
   const VARIANCE = 0.05;
@@ -10,11 +10,11 @@ describe('Hyperfine', () => {
     const sleepTime = 0.05;
     const metrics = await Hyperfine.run(`sleep ${sleepTime}`);
 
-    assert.equal(metrics.command, `sleep ${sleepTime}`);
-    assert.equal(Math.abs(metrics.mean - sleepTime) < VARIANCE, true);
-    assert.equal(Math.abs(metrics.median - sleepTime) < VARIANCE, true);
-    assert.equal(Math.abs(metrics.min - sleepTime) < VARIANCE, true);
-    assert.equal(Math.abs(metrics.max - sleepTime) < VARIANCE, true);
+    equal(metrics.command, `sleep ${sleepTime}`);
+    equal(Math.abs(metrics.mean - sleepTime) < VARIANCE, true);
+    equal(Math.abs(metrics.median - sleepTime) < VARIANCE, true);
+    equal(Math.abs(metrics.min - sleepTime) < VARIANCE, true);
+    equal(Math.abs(metrics.max - sleepTime) < VARIANCE, true);
 
     console.log(metrics);
   });
