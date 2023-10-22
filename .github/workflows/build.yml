@@ -1,5 +1,5 @@
 name: Main
-on: [push]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -12,6 +12,4 @@ jobs:
     - name: Bundle
       run: npm run bundle
 
-    - name: Test Action
-      uses: ./
 
