@@ -1,7 +1,6 @@
 {
   "extends": "@linzjs/style/tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["ES2022"],
-    "esModuleInterop": true
+    "lib": ["ES2022"]
   }
 }

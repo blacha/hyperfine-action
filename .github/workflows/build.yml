@@ -8,6 +8,8 @@ jobs:
 
     steps:
     - uses: linz/action-typescript@v3
+      with: 
+        node-version: 20
 
     - name: Bundle
       run: npm run bundle
