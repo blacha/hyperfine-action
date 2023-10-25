@@ -4,7 +4,6 @@
   "main": "build/index.js",
   "scripts": {
     "build": "tsc --pretty",
-    "lint": "eslint . --quiet --fix --ignore-path .gitignore",
     "test": "node --test",
     "bundle": "npx esbuild src/action.ts --bundle --outfile=dist/index.cjs --platform=node"
   },
