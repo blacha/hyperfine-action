@@ -13,7 +13,7 @@ export type HyperfineConfigFile = HyperfineConfig[];
 export interface HyperfineConfig {
   name: string;
   command: string;
-  extraArgs: any[]
+  extraArgs: any;
 }
 
 export interface HyperfineResultSuite {

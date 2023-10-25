@@ -2,7 +2,7 @@ import { exec } from 'child_process';
 import { randomBytes } from 'crypto';
 import { promises as fs } from 'fs';
 import * as path from 'path';
-
+import * as core from '@actions/core';
 import { fileExists } from '../file.js';
 import { HyperFineJsonOutput, HyperFineResult } from './hyperfine.output.js';
 
@@ -47,14 +47,14 @@ export async function waitForChildProcess(cmd: string): Promise<string> {
 }
 
 export async function runHyperfine(cmd: string, extraArgs: any): Promise<HyperFineResult> {
-  //extraArgs example: {runs: "3", prepare: 5, shell: "zsh", "N": true}
+  core.debug(extraArgs);
   const HyperFineCommand = await findHyperfine();
 
   const outputJsonFile = './' + randomBytes(10).toString('hex') + '.json';
   const hyperfineExecute = [HyperFineCommand, `--export-json ${outputJsonFile}`,
     Object.entries(extraArgs).map((e: any) => `${e[0].length == 1 ? `-${e[0]}` : `--${e[0]}`}${isNaN(e[1]) ? ' ' + JSON.stringify(e[1]) : (typeof e[1] == "boolean") ? "" : ' ' + e[1]}`).join(" "),
     `${JSON.stringify(cmd)}`];
-
+  core.debug(hyperfineExecute.join(" "));
   const buffer = await waitForChildProcess(hyperfineExecute.join(' '));
   console.log(buffer);
 
