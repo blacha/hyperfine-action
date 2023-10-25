@@ -46,8 +46,8 @@ export async function waitForChildProcess(cmd: string): Promise<string> {
   });
 }
 
-export async function runHyperfine(cmd: string, extraArgs: any): Promise<HyperFineResult> {
-  core.debug(extraArgs);
+export async function runHyperfine(cmd: string, extraArgs={}): Promise<HyperFineResult> {
+  core.debug(JSON.stringify(extraArgs));
   const HyperFineCommand = await findHyperfine();
 
   const outputJsonFile = './' + randomBytes(10).toString('hex') + '.json';

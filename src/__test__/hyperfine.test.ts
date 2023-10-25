@@ -8,7 +8,7 @@ describe('Hyperfine', () => {
 
   it('Should get metrics', async () => {
     const sleepTime = 0.05;
-    const metrics = await Hyperfine.run(`sleep ${sleepTime}`);
+    const metrics = await Hyperfine.run(`sleep ${sleepTime}`,{});
 
     assert.equal(metrics.command, `sleep ${sleepTime}`);
     assert.equal(Math.abs(metrics.mean - sleepTime) < VARIANCE, true);
