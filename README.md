@@ -21,7 +21,7 @@ Create a `.hyperfine.json`
 ```json
 [
   { "name": "sleep", "command": "sleep 0.1" },
-  { "name": "node", "command": "node -e 'console.log()'" }
+  { "name": "node", "command": "node -e 'console.log()'", "extraArgs": { "shell": "zsh" } }
 ]
 ```
 

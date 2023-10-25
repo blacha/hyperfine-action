@@ -1,4 +1,18 @@
 [
-  { "name": "sleep", "command": "sleep 0.1" },
-  { "name": "node", "command": "node -e 'console.log()'" }
+  {
+    "name": "sleep",
+    "command": "sleep 0.1"
+  },
+  {
+    "name": "node",
+    "command": "node -e 'console.log()'"
+  },
+  {
+    "name": "extra arguments test",
+    "command": "for i in {1..10000}; do echo test; done",
+    "extraArgs": {
+      "shell": "zsh",
+      "L": "compiler gcc,clang"
+    }
+  }
 ]

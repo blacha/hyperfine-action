@@ -13,6 +13,7 @@ export type HyperfineConfigFile = HyperfineConfig[];
 export interface HyperfineConfig {
   name: string;
   command: string;
+  extraArgs: any[]
 }
 
 export interface HyperfineResultSuite {
@@ -92,7 +93,7 @@ async function main(): Promise<void> {
 
   for (const suite of config) {
     core.debug(`Starting benchmark: ${suite.name}`);
-    const res = await Hyperfine.run(suite.command);
+    const res = await Hyperfine.run(suite.command, suite.extraArgs);
     const count = res.times?.length ?? 0;
     delete res.times;
     benchmark.results.push({
