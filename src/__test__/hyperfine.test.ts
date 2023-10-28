@@ -1,7 +1,7 @@
 import { equal } from 'node:assert';
 import { describe, it } from 'node:test';
 
-import { Hyperfine } from '../index';
+import { Hyperfine } from '../index.js';
 
 describe('Hyperfine', () => {
   const VARIANCE = 0.05;
