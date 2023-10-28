@@ -1,6 +1,7 @@
+import { execFileSync } from 'node:child_process';
+
 import * as core from '@actions/core';
 import * as github from '@actions/github';
-import { execFileSync } from 'child_process';
 
 const RemoteName = 'hyperfine-action-remote';
 
@@ -20,7 +21,7 @@ export class Git {
     try {
       this.git('remote', 'remove', RemoteName);
     } catch (e) {
-      // ignore if remote doesnt exist
+      // ignore if remote doesn't exist
     }
     this.git('remote', 'add', RemoteName, this.url);
     this.git('config', '--global', 'user.name', this.actor);

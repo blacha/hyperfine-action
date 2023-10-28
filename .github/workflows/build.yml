@@ -1,5 +1,9 @@
 name: Main
-on: [push]
+on:
+  push:
+    branches:
+      - master
+  pull_request:
 
 jobs:
   build:
@@ -8,10 +12,10 @@ jobs:
 
     steps:
     - uses: linz/action-typescript@v3
+      with: 
+        node-version: 20
 
     - name: Bundle
       run: npm run bundle
 
-    - name: Test Action
-      uses: ./
 
