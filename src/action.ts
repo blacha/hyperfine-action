@@ -43,8 +43,7 @@ export interface HyperfineResult {
   results: HyperfineResultSuite[];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isHyperfineConfig(obj: Record<string, any>): obj is HyperfineConfig[] {
+function isHyperfineConfig(obj: unknown): obj is HyperfineConfig[] {
   if (!Array.isArray(obj)) {
     return false;
   }
@@ -59,11 +58,11 @@ async function getExistingBenchmarks(benchmarkFile: string): Promise<HyperfineRe
   if (!isExistingBenchmarks) return [];
 
   const data = await readFile(benchmarkFile);
-  const res = JSON.parse(data.toString());
+  const res = JSON.parse(data.toString()) as HyperfineResult[];
   if (!Array.isArray(res)) {
     throw new Error(`Corrupted benchmark file, ${benchmarkFile} is not a JSON array`);
   }
-  return res as HyperfineResult[];
+  return res;
 }
 
 async function main(): Promise<void> {
@@ -80,7 +79,7 @@ async function main(): Promise<void> {
   const isConfigFound = await fileExists(configPath);
   if (!isConfigFound) throw new Error(`Config file: ${configPath} not found`);
 
-  const config = JSON.parse((await readFile(configPath)).toString());
+  const config: unknown = JSON.parse((await readFile(configPath)).toString());
   if (!isHyperfineConfig(config)) throw new Error(`Config file: ${configPath} is not a JSON array`);
 
   const git = new Git(core.getInput('github-token'));

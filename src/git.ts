@@ -17,7 +17,7 @@ export class Git {
     return execFileSync('git', args).toString().trim();
   }
 
-  async init(): Promise<void> {
+  init(): void {
     try {
       this.git('remote', 'remove', RemoteName);
     } catch (e) {

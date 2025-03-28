@@ -33,7 +33,7 @@ export async function waitForChildProcess(cmd: string): Promise<string> {
   if (child.stdout == null) {
     throw new Error('Child missing stdout');
   }
-  child.stdout.on('data', (data) => output.push(data));
+  child.stdout.on('data', (data: string) => output.push(data));
 
   return new Promise((resolve, reject) => {
     child.addListener('error', reject);
