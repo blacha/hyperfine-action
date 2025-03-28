@@ -24380,7 +24380,7 @@ var Git = class {
     core.debug("git :" + JSON.stringify(args));
     return (0, import_node_child_process.execFileSync)("git", args).toString().trim();
   }
-  async init() {
+  init() {
     try {
       this.git("remote", "remove", RemoteName);
     } catch (e) {
